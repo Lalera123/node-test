@@ -33,7 +33,7 @@ router.post(
     }).then(res => JSON.parse(JSON.stringify(res)));
 
     if (createdFile) {
-      res.json({
+      res.status(201).json({
         success: true,
         ...createdFile
       });
@@ -52,7 +52,7 @@ router.get('/list', authMiddleware.verifyToken, async (req, res) => {
     where: {}
   });
 
-  res.json({
+  res.status(200).json({
     data: files,
     count: files.length
   });
@@ -75,11 +75,13 @@ router.delete('/delete/:id', authMiddleware.verifyToken, async (req, res) => {
 
   if (!file) {
     return res.status(400).json({
+      code: 'ERR_NOT_FOUND',
       message: 'File not found'
     });
   }
 
-  return res.status(201).json({
+  return res.status(200).json({
+    code: 'DELETED',
     message: 'Deleted successfully'
   });
 });
@@ -124,6 +126,7 @@ router.put(
     }
 
     return res.status(404).json({
+      code: 'ERR_NOT_FOUND',
       message: 'File not found'
     });
   }
@@ -138,12 +141,12 @@ router.get('/:id', authMiddleware.verifyToken, async (req, res) => {
 
   if (!file) {
     return res.status(404).json({
-      success: false,
+      code: 'ERR_NOT_FOUND',
       message: 'File not found'
     });
   }
 
-  return res.json({
+  return res.status(200).json({
     success: true,
     data: file
   });

@@ -22,7 +22,8 @@ router.get('/signIn/:refreshToken', async (req, res) => {
 
   if (blackListResult) {
     return res.status(400).json({
-      message: 'invalid token'
+      code: 'ERR_INVALID_TOKEN',
+      message: 'Invalid token provided'
     });
   }
 
@@ -46,18 +47,20 @@ router.get('/signIn/:refreshToken', async (req, res) => {
         refreshToken
       });
 
-      res.json({
+      res.status(200).json({
         success: true,
         accessToken: `Bearer ${tokens.accessToken}`,
         refreshToken: tokens.refreshToken
       });
     } else {
       return res.status(500).json({
+        code: 'ERR_SERVER_ERROR',
         message: 'Unexpected server error'
       });
     }
   } else {
     return res.status(500).json({
+      code: 'ERR_SERVER_ERROR',
       message: 'Unexpected server error'
     });
   }
@@ -74,6 +77,7 @@ router.post('/signUp', async (req, res) => {
 
   if (user) {
     return res.status(400).json({
+      code: 'ERR_USER_EXISTS',
       message: 'The user is already exists'
     });
   }
@@ -97,7 +101,7 @@ router.post('/signUp', async (req, res) => {
       refreshToken: tokens.refreshToken
     });
 
-    res.json({
+    res.status(201).json({
       success: true,
       accessToken: `Bearer ${tokens.accessToken}`,
       refreshToken: tokens.refreshToken,
@@ -105,6 +109,7 @@ router.post('/signUp', async (req, res) => {
     });
   } else {
     return res.status(500).json({
+      code: 'ERR_SERVER_ERROR',
       message: 'Unexpected server error'
     });
   }
@@ -116,7 +121,10 @@ router.post('/signIn', async (req, res) => {
   const user = await User.findOne({ id });
 
   if (!user) {
-    return res.status(404).json('User\'s not found');
+    return res.status(404).json({
+      code: 'ERR_USER_NOT_FOUND',
+      message: 'The User\'s not found'
+    });
   }
 
   bcrypt.compare(password, user.password)
@@ -136,7 +144,7 @@ router.post('/signIn', async (req, res) => {
             refreshToken: tokens.refreshToken
           });
 
-          res.json({
+          res.status(200).json({
             success: true,
             accessToken: `Bearer ${tokens.accessToken}`,
             refreshToken: tokens.refreshToken,
@@ -144,7 +152,10 @@ router.post('/signIn', async (req, res) => {
           });
         }
       } else {
-        res.status(400).json('Incorrect Password');
+        return res.status(400).json({
+          code: 'ERR_INVALID_PASSWORD',
+          message: 'The password is invalid'
+        });
       }
     });
 });
@@ -165,7 +176,7 @@ router.get('/logout', authMiddleware.verifyToken, async (req, res) => {
     refreshToken: oldTokens.refreshToken
   });
 
-  res.json({
+  res.status(200).json({
     ...tokens
   });
 });

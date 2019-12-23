@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/info', authMiddleware.verifyToken, (req, res) => {
   const { currentUser } = req;
 
-  res.json({
+  res.status(200).json({
     currentUser: currentUser.id
   });
 });
