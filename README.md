@@ -1,94 +1,134 @@
 ## Getting started
 
 To run the app clone project and then use:
-
 ```
-$ npm start
+$ npm install
 ```
-(after npm i)
+```
+$ npm start 
+```
 ```
 $ npm run devstart (for development use)
 ```
 ## API description
 
-- /signin [POST]
+- /auth/signin [POST]
+```
   reguest params {
-    login: string,
+    id: string,
     password: string
   }
-
+```
+```
   response {
     accessToken: string,
     refreshToken: string,
-    login: string,
+    id: string,
     password: string
   }
+```
 
-- /signin/refresh_token [GET] - update access token using refresh token
+- /auth/signin/refresh_token [GET] - update access token using refresh token
+
+```
+  response {
+    accessToken: string,
+    refreshToken: string,
+  }
+```
+
+- /auth/signup [POST] - create new user
+```
   reguest params {
-    refreshToken: string
-  }
-  response {
-    accessToken: string,
-    refreshToken: string,
-  }
-- /signup [POST] - create new user
-  reguest params {
-    login: string,
+    id: string,
     password: string
   }
-
+```
+```
   response {
     accessToken: string,
     refreshToken: string,
-    login: string,
-    password: string
+    id: string,
+    password: string,
+    updatedAt: string,
+    createdAt: string
   }
-- /logout [GET] - deactivate current token an get the new one
+```
+- /auth/logout [GET] - deactivate current token an get the new one
+```
   response {
     accessToken: string,
     refreshToken: string,
   }
+```
 - /file/upload [POST] - upload new file and save it to server
+```
   reguest params {
-    file: form-data
+    filedata: form-data
   }
+```
+```
   response {
-    accessToken: string,
-    refreshToken: string,
-    login: string,
-    password: string
+    id: string,
+    name: string,
+    mimeType: string,
+    size: real,
+    extension: string,
+    updatedAt: string,
+    createdAt: string
   }
-- /file/list [GET] - the list of uploaded files
-pagination params {
-  page: integer - the page to show,
-  listSize: integer - the number of files per page
-}
+```
 
-response {
-  data: array
+- /file/list [GET] - the list of uploaded files
+```
+pagination params {
+  page: integer - the page to show (default 1),
+  listSize: integer - the number of files per page (default 10)
 }
+```
+```
+response {
+  data: array,
+  count: integer
+}
+```
 
 - /file/delete/:id [DELETE] - delete uploaded file by id
 
 - /file/:id [GET] - get file's info by id
+```
   response {
+    id: string,
     name: string,
-    mimetype: string,
+    mimeType: string,
     size: real,
     extension: string,
+    updatedAt: string,
+    createdAt: string
   }
+```
 - /file/download/:id [GET] - download file by id
 
 - /file/update/:id [PUT] - updtae file by id
+```
   reguest params {
-    file: form-data
+    filedata: form-data
   }
-
+```
+```
   response {
+    id: string,
     name: string,
-    mimetype: string,
+    mimeType: string,
     size: real,
     extension: string,
+    updatedAt: string,
+    createdAt: string
   }
-- /info [GET] - get current user id
+```
+- /users/info [GET] - get current user id
+```
+  response {
+    currentUser: string
+  }
+```
