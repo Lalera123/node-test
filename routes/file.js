@@ -47,7 +47,7 @@ router.get('/list', authMiddleware.verifyToken, async (req, res) => {
   const offset = (page - 1) * listSize;
 
   const files = await File.findAll({
-    limit: listSize,
+    limit: parseInt(listSize),
     offset,
     where: {}
   });

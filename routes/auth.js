@@ -30,14 +30,14 @@ router.get('/signIn/:refreshToken', async (req, res) => {
     where: {
       refreshToken
     }
-  }).then(res => JSON.parse(JSON.stringify(res)));
+  });
 
   if (userAuth) {
     const user = await User.findOne({
       where: {
         id: userAuth.userID
       }
-    });
+    }).then(res => JSON.parse(JSON.stringify(res)));
 
     const tokens = generateTokens(user);
 
